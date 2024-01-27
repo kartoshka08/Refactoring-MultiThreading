@@ -85,10 +85,10 @@ public class Server {
     }
 
 
-    public void start() {
+    public void start() throws IOException{
         try (final var serverSocket = new ServerSocket(socketInt)) {
-            while (!serverSocket.isClosed()) {
-                try (final var socket = serverSocket.accept()) {
+            while (true) {
+                final var socket = serverSocket.accept();
                     executor.execute(() -> {
                         try {
                             proceedConnection(socket);
@@ -96,13 +96,7 @@ public class Server {
                             throw new RuntimeException(e);
                         }
                     });
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
                 }
-
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
