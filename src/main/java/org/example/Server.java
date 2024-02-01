@@ -28,14 +28,10 @@ public class Server {
     public void proceedConnection(Socket socket) throws IOException {
         final var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         BufferedOutputStream out = new BufferedOutputStream(socket.getOutputStream());
-
-        // read only request line for simplicity
-        // must be in form GET /path HTTP/1.1
         final var requestLine = in.readLine();
         final var parts = requestLine.split(" ");
 
         if (parts.length != 3) {
-            // just close socket
             socket.close();
             return;
         }
@@ -54,7 +50,6 @@ public class Server {
         final var filePath = Path.of(".", "public", path);
         final var mimeType = Files.probeContentType(filePath);
 
-        // special case for classic
         if (path.equals("/classic.html")) {
             final var template = Files.readString(filePath);
             final var content = template.replace(
@@ -100,3 +95,4 @@ public class Server {
             }
     }
 }
+
